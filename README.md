@@ -12,3 +12,6 @@ This plugin can get the default audio device name and change master volume in th
 You can install it from the unreal marketplace [SystemAudioVolumeLite](https://www.unrealengine.com/marketplace/en-US/product/system-audio-volume-lite)  
 You can install manually by extracting SystemAudioVolumeLite-X.X.X-marketplace-win64-ueX.XX.zip from [Releases](https://github.com/mrbindraw/SystemAudioVolumeLite/releases)  
 to your project plugins folder.
+
+# Example project  
+[DemoSysAudioVolumeLite](https://drive.google.com/drive/folders/1ZMCjGoutt0LQ7CcDy8sjNeaLxmW3vNlu?usp=drive_link)
