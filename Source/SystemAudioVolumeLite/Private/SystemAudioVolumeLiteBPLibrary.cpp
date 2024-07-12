@@ -23,3 +23,8 @@ float USystemAudioVolumeLiteBPLibrary::GetMasterVolume()
 {
 	return FSystemAudioLiteManager::Get()->GetMasterVolume();
 }
+
+TMap<FString, FString> USystemAudioVolumeLiteBPLibrary::GetActiveDevices()
+{
+	return FSystemAudioLiteManager::Get()->GetActiveDevices();
+}

@@ -20,5 +20,8 @@ class USystemAudioVolumeLiteBPLibrary : public UBlueprintFunctionLibrary
 
 	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Master Volume")
 	static float GetMasterVolume();
+	
+	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Active Devices")
+	static TMap<FString, FString> GetActiveDevices();
 
 };
