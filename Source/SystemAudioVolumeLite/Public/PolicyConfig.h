@@ -1,3 +1,5 @@
+// Copyright 2024 Andrew Bindraw. All Rights Reserved.
+
 #pragma once
 
 // ca286fc3-91fd-42c3-8e9b-caafa66242e3
