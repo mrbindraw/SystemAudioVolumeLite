@@ -7,7 +7,7 @@
 #include "SystemAudioVolumeLiteBPLibrary.generated.h"
 
 UCLASS()
-class USystemAudioVolumeLiteBPLibrary : public UBlueprintFunctionLibrary
+class SYSTEMAUDIOVOLUMELITE_API USystemAudioVolumeLiteBPLibrary : public UBlueprintFunctionLibrary
 {
 	GENERATED_UCLASS_BODY()
 
