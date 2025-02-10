@@ -4,15 +4,19 @@
 
 FSystemAudioLiteManager *FSystemAudioLiteManager::Instance = nullptr;
 
-FSystemAudioLiteManager::FSystemAudioLiteManager() : 
-	AudioEndpointVolume(nullptr),
+FSystemAudioLiteManager::FSystemAudioLiteManager()
+#if PLATFORM_WINDOWS
+: AudioEndpointVolume(nullptr),
 	DefaultDevice(nullptr),
 	DeviceEnumerator(nullptr),
 	DevicesCollection(nullptr),
 	PropertyStore(nullptr),
 	PolicyConfigVista(nullptr),
 	PolicyConfig(nullptr)
+#endif
 {
+
+#if PLATFORM_WINDOWS
 	FWindowsPlatformMisc::CoInitialize();
 
 	CoCreateInstance(__uuidof(CPolicyConfigVistaClient), nullptr, CLSCTX_ALL, __uuidof(IPolicyConfigVista), (LPVOID *)&PolicyConfigVista);
@@ -31,6 +35,7 @@ FSystemAudioLiteManager::FSystemAudioLiteManager() :
 	}
 
 	CoCreateInstance(__uuidof(MMDeviceEnumerator), nullptr, CLSCTX_INPROC_SERVER, __uuidof(IMMDeviceEnumerator), (LPVOID *)&DeviceEnumerator);
+#endif
 }
 
 FSystemAudioLiteManager *FSystemAudioLiteManager::Get()
@@ -45,7 +50,9 @@ FSystemAudioLiteManager *FSystemAudioLiteManager::Get()
 
 FSystemAudioLiteManager::~FSystemAudioLiteManager()
 {
+#if PLATFORM_WINDOWS
 	FWindowsPlatformMisc::CoUninitialize();
+#endif
 }
 
 void FSystemAudioLiteManager::DestroyInstance()
@@ -64,6 +71,9 @@ FString FSystemAudioLiteManager::GetDefaultDeviceName()
 
 FString FSystemAudioLiteManager::GetDefaultDeviceId()
 {
+	FString DeviceIdStr;
+
+#if PLATFORM_WINDOWS
 	HRESULT Result = DeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &DefaultDevice);
 	if (Result != S_OK)
 	{
@@ -83,8 +93,10 @@ FString FSystemAudioLiteManager::GetDefaultDeviceId()
 	{
 		return FString(TEXT(""));
 	}
+	DeviceIdStr = FString(WCHAR_TO_TCHAR(swId));
+#endif
 
-	return FString(WCHAR_TO_TCHAR(swId));
+	return DeviceIdStr;
 }
 
 FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString &DeviceId)
@@ -106,6 +118,7 @@ TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
 {
 	TMap<FString, FString> ActiveDevices;
 
+#if PLATFORM_WINDOWS
 	// https://msdn.microsoft.com/en-us/library/windows/desktop/dd371400(v=vs.85).aspx, see Return value!
 	HRESULT Result = DeviceEnumerator->EnumAudioEndpoints(eRender, DEVICE_STATE_ACTIVE, &DevicesCollection);
 	if (Result != S_OK)
@@ -151,6 +164,7 @@ TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
 		DevicesCollection->Release();
 		DevicesCollection = nullptr;
 	}
+#endif
 
 	return ActiveDevices;
 }
@@ -159,6 +173,7 @@ void FSystemAudioLiteManager::SetMasterVolume(float Value)
 {
 	float MasterVolume = this->GetScalarFromValue(Value);
 
+#if PLATFORM_WINDOWS
 	HRESULT Result = DeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &DefaultDevice);
 	if (Result != S_OK)
 	{
@@ -188,10 +203,14 @@ void FSystemAudioLiteManager::SetMasterVolume(float Value)
 		DefaultDevice->Release();
 		DefaultDevice = nullptr;
 	}
+#endif
 }
 
 float FSystemAudioLiteManager::GetMasterVolume()
 {
+	float MasterVolume = 0.0f;
+
+#if PLATFORM_WINDOWS
 	HRESULT Result = DeviceEnumerator->GetDefaultAudioEndpoint(eRender, eConsole, &DefaultDevice);
 	if (Result != S_OK)
 	{
@@ -204,7 +223,6 @@ float FSystemAudioLiteManager::GetMasterVolume()
 		return 0.0f;
 	}
 
-	float MasterVolume = 0.0f;
 	Result = AudioEndpointVolume->GetMasterVolumeLevelScalar(&MasterVolume);
 	if (Result != S_OK)
 	{
@@ -222,6 +240,7 @@ float FSystemAudioLiteManager::GetMasterVolume()
 		DefaultDevice->Release();
 		DefaultDevice = nullptr;
 	}
+#endif
 
 	return GetValueFromScalar(MasterVolume);
 }

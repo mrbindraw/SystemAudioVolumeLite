@@ -18,10 +18,7 @@
     {
       "Name": "SystemAudioVolumeLite",
       "Type": "Runtime",
-      "LoadingPhase": "Default",
-      "WhitelistPlatforms": [
-        "Win64"
-      ]
+      "LoadingPhase": "Default"
     }
   ]
 }

@@ -5,6 +5,7 @@
 
 #include "CoreMinimal.h"
 
+#if PLATFORM_WINDOWS
 #include "Windows/AllowWindowsPlatformTypes.h"
 #include <mmdeviceapi.h>
 #include <endpointvolume.h>
@@ -12,6 +13,7 @@
 #include <mmeapi.h>
 #include "PolicyConfig.h"
 #include "Windows/HideWindowsPlatformTypes.h"
+#endif
 
 class FSystemAudioLiteManager
 {
@@ -21,6 +23,7 @@ class FSystemAudioLiteManager
 		
 		static FSystemAudioLiteManager *Instance;
 
+#if PLATFORM_WINDOWS
 		IAudioEndpointVolume    *AudioEndpointVolume;
 		IMMDevice               *DefaultDevice;
 		IMMDeviceEnumerator     *DeviceEnumerator;
@@ -29,6 +32,7 @@ class FSystemAudioLiteManager
 
 		IPolicyConfigVista      *PolicyConfigVista;
 		IPolicyConfig           *PolicyConfig;
+#endif
 
 	public:
 		static FSystemAudioLiteManager *Get();
