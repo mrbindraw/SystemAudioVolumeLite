@@ -1,24 +1,29 @@
 {
-  "FileVersion": 3,
-  "Version": 3,
-  "VersionName": "2.0.0",
-  "FriendlyName": "SystemAudioVolumeLite",
-  "Description": "Control audio device in the system",
-  "Category": "Audio",
-  "CreatedBy": "Andrew Bindraw",
-  "CreatedByURL": "https://github.com/mrbindraw",
-  "DocsURL": "https://docs.google.com/document/d/13qQpKiYOstN0GyQf7LARekuegFQJSqb79T_gIKM_G9o/edit?usp=drive_link",
-  "MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a794ab17b9a9457c8960794a90035414",
-  "SupportURL": "mailto:mrbindraw@gmail.com",
-  "CanContainContent": false,
-  "IsBetaVersion": false,
-  "IsExperimentalVersion": false,
-  "Installed": false,
-  "Modules": [
-    {
-      "Name": "SystemAudioVolumeLite",
-      "Type": "Runtime",
-      "LoadingPhase": "Default"
-    }
-  ]
+	"FileVersion": 3,
+	"Version": 3,
+	"VersionName": "2.0.0",
+	"FriendlyName": "SystemAudioVolumeLite",
+	"Description": "Control audio device in the system",
+	"Category": "Audio",
+	"CreatedBy": "Andrew Bindraw",
+	"CreatedByURL": "https://github.com/mrbindraw",
+	"DocsURL": "https://docs.google.com/document/d/13qQpKiYOstN0GyQf7LARekuegFQJSqb79T_gIKM_G9o/edit?usp=drive_link",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/a794ab17b9a9457c8960794a90035414",
+	"SupportURL": "mailto:mrbindraw@gmail.com",
+	"CanContainContent": false,
+	"IsBetaVersion": false,
+	"IsExperimentalVersion": false,
+	"Installed": false,
+	"Modules": [
+		{
+			"Name": "SystemAudioVolumeLite",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"Linux"
+			]
+		}
+	]
 }
