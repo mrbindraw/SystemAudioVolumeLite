@@ -8,7 +8,8 @@
 void FSystemAudioVolumeLiteModule::StartupModule()
 {
 	// This code will execute after your module is loaded into memory; the exact timing is specified in the .uplugin file per-module
-	
+
+	FSystemAudioLiteManager::Get();
 }
 
 void FSystemAudioVolumeLiteModule::ShutdownModule()

@@ -11,9 +11,12 @@
 #include <endpointvolume.h>
 #include <functiondiscoverykeys_devpkey.h>
 #include <mmeapi.h>
+#include "Microsoft/COMPointer.h"
 #include "PolicyConfig.h"
 #include "Windows/HideWindowsPlatformTypes.h"
 #endif
+
+DECLARE_LOG_CATEGORY_EXTERN(LogSystemAudioLiteManager, Log, All);
 
 class FSystemAudioLiteManager
 {
@@ -21,36 +24,41 @@ class FSystemAudioLiteManager
 		FSystemAudioLiteManager();
 		~FSystemAudioLiteManager();
 		
-		static FSystemAudioLiteManager *Instance;
+		static FSystemAudioLiteManager* Instance;
 
 #if PLATFORM_WINDOWS
-		IAudioEndpointVolume    *AudioEndpointVolume;
-		IMMDevice               *DefaultDevice;
-		IMMDeviceEnumerator     *DeviceEnumerator;
-		IMMDeviceCollection     *DevicesCollection;
-		IPropertyStore          *PropertyStore;
-
-		IPolicyConfigVista      *PolicyConfigVista;
-		IPolicyConfig           *PolicyConfig;
+		TComPtr<IPolicyConfigVista>     PolicyConfigVista;
+		TComPtr<IPolicyConfig>			PolicyConfig;
+		TComPtr<IMMDeviceEnumerator>	DeviceEnumerator;
 #endif
 
 	public:
-		static FSystemAudioLiteManager *Get();
+		static FSystemAudioLiteManager* Get();
 		
 		static void DestroyInstance();
+
+		void Init();
 		
-		void SetMasterVolume(float Value);
-		float GetMasterVolume();
+		void SetVolume(float Value, const FString& DeviceId = FString(TEXT("")));
+		float GetVolume(const FString& DeviceId = FString(TEXT("")));
 
 		TMap<FString, FString> GetActiveDevices();
 
 		FString GetDefaultDeviceId();
 		FString GetDefaultDeviceName();
 
-		FString GetDeviceNameFromId(const FString &DeviceId);
+		FString GetDeviceNameFromId(const FString& DeviceId);
+
+		FString GetDeviceIdFromName(const FString& DeviceName);
 
 	private:
 		FORCEINLINE float GetScalarFromValue(int32 Value);
 
 		FORCEINLINE float GetValueFromScalar(float Value);
+
+#if PLATFORM_WINDOWS
+		TComPtr<IMMDevice> GetDevice(const FString& DeviceId = FString(TEXT("")));
+		TComPtr<IAudioEndpointVolume> GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device);
+		TComPtr<IAudioEndpointVolume> GetAudioEndpointVolume(const FString& DeviceId = FString(TEXT("")));
+#endif
 };
