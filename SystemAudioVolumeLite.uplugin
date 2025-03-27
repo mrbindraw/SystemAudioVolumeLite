@@ -1,7 +1,7 @@
 {
 	"FileVersion": 3,
-	"Version": 3,
-	"VersionName": "2.0.0",
+	"Version": 4,
+	"VersionName": "3.0.0",
 	"FriendlyName": "SystemAudioVolumeLite",
 	"Description": "Control audio device in the system",
 	"Category": "Audio",
