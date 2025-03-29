@@ -3,10 +3,14 @@ This is a free version of the plugin [SystemAudioVolume](https://www.fab.com/lis
 This plugin can get the default audio device name and change audio volume in the system. 
 
 **C++ / Blueprints functions:**
-- GetDefaultDeviceName( ) / GetSystemAudioDefaultDeviceName( )
-- SetMasterVolume( ) / SetSystemAudioMasterVolume( )
-- GetMasterVolume( ) / GetSystemAudioMasterVolume( )
-- GetActiveDevices( ) / GetSystemAudioActiveDevices( )
+- FString GetDefaultDeviceName / GetSystemAudioDefaultDeviceName ( );
+- GetDeviceIdFromName / GetSystemAudioDeviceIdFromName (const FString& InDeviceName, FString& OutDeviceId);
+- GetDeviceNameFromId / GetSystemAudioDeviceNameFromId (const FString& InDeviceId, FString& OutDeviceName);
+- SetVolume / SetSystemAudioVolume(float Value);
+- SetVolumeForDeviceId / SetSystemAudioVolumeForDeviceId (const FString& DeviceId, float Volume);
+- float GetVolume / GetSystemAudioVolume ( );
+- float GetVolumeForDeviceId / GetSystemAudioVolumeForDeviceId (const FString& DeviceId);
+- TMap<FString, FString> GetActiveDevices / GetSystemAudioActiveDevices( );
 
 # Install into Project
 You can install manually by extracting archive `SystemAudioVolumeLite-X.X.X-UE-X.X.zip` from [Releases](https://github.com/mrbindraw/SystemAudioVolumeLite/releases)  
