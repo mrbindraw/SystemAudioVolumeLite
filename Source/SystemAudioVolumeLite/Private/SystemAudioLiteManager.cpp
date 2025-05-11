@@ -159,12 +159,12 @@ TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
 		return TMap<FString, FString>();
 	}
 
-	TComPtr<IMMDevice> Device;
-	TComPtr<IPropertyStore>	PropertyStore;
-	LPWSTR pwszID = nullptr;
-
 	for (UINT i = 0; i < count; i++)
 	{
+		TComPtr<IMMDevice> Device;
+		TComPtr<IPropertyStore>	PropertyStore;
+		LPWSTR pwszID = nullptr;
+		
 		DevicesCollection->Item(i, &Device);
 		Device->GetId(&pwszID);
 
