@@ -58,6 +58,8 @@ class FSystemAudioLiteManager
 
 #if PLATFORM_WINDOWS
 		TComPtr<IMMDevice> GetDevice(const FString& DeviceId = FString(TEXT("")));
+		FString GetDeviceName(const TComPtr<IMMDevice>& Device) const;
+		FString GetDeviceId(const TComPtr<IMMDevice>& Device) const;
 		TComPtr<IAudioEndpointVolume> GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device);
 		TComPtr<IAudioEndpointVolume> GetAudioEndpointVolume(const FString& DeviceId = FString(TEXT("")));
 #endif
