@@ -17,6 +17,9 @@ public:
 	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Default Device Name")
 	static FString GetDefaultDeviceName();
 
+	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Default Device Id")
+	static FString GetDefaultDeviceId();
+
 	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Device Id From Name")
 	static void GetDeviceIdFromName(const FString& InDeviceName, FString& OutDeviceId);
 

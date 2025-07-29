@@ -21,6 +21,11 @@ FString USystemAudioVolumeLiteBPLibrary::GetDefaultDeviceName()
 	return FSystemAudioLiteManager::Get()->GetDefaultDeviceName();
 }
 
+FString USystemAudioVolumeLiteBPLibrary::GetDefaultDeviceId()
+{
+	return FSystemAudioLiteManager::Get()->GetDefaultDeviceId();
+}
+
 void USystemAudioVolumeLiteBPLibrary::GetDeviceIdFromName(const FString& InDeviceName, FString& OutDeviceId)
 {
 	OutDeviceId = FSystemAudioLiteManager::Get()->GetDeviceIdFromName(InDeviceName);
