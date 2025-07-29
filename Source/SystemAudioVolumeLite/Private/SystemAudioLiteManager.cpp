@@ -151,36 +151,23 @@ TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
 		return TMap<FString, FString>();
 	}
 
-	UINT count = 0;
-	Result = DevicesCollection->GetCount(&count);
+	UINT CountActiveDevices = 0;
+	Result = DevicesCollection->GetCount(&CountActiveDevices);
 	if (Result != S_OK)
 	{
 		UE_LOG(LogSystemAudioLiteManager, Warning, TEXT("Result != S_OK, DevicesCollection->GetCount, [%s], line: %d"), ANSI_TO_TCHAR(__FUNCTION__), __LINE__);
 		return TMap<FString, FString>();
 	}
 
-	for (UINT i = 0; i < count; i++)
+	for (UINT i = 0; i < CountActiveDevices; i++)
 	{
 		TComPtr<IMMDevice> Device;
-		TComPtr<IPropertyStore>	PropertyStore;
-		LPWSTR pwszID = nullptr;
-		
 		DevicesCollection->Item(i, &Device);
-		Device->GetId(&pwszID);
 
-		Device->OpenPropertyStore(STGM_READ, &PropertyStore);
+		const FString DeviceId = GetDeviceId(Device);
+		const FString DeviceName = GetDeviceName(Device);
 
-		PROPVARIANT nameDevice;
-		PropVariantInit(&nameDevice);
-		PropertyStore->GetValue(PKEY_Device_FriendlyName, &nameDevice);
-
-		ActiveDevices.Add(FString(WCHAR_TO_TCHAR(pwszID)));
-		ActiveDevices[FString(WCHAR_TO_TCHAR(pwszID))] = FString(WCHAR_TO_TCHAR(nameDevice.pwszVal));
-
-		PropVariantClear(&nameDevice);
-
-		CoTaskMemFree(pwszID);
-		pwszID = nullptr;
+		ActiveDevices.Add(DeviceId, DeviceName);
 	}
 #endif
 
