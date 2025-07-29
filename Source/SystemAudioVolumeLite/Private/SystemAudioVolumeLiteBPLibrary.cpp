@@ -21,6 +21,11 @@ FString USystemAudioVolumeLiteBPLibrary::GetDefaultDeviceName()
 	return FSystemAudioLiteManager::Get()->GetDefaultDeviceName();
 }
 
+FString USystemAudioVolumeLiteBPLibrary::GetDefaultDeviceId()
+{
+	return FSystemAudioLiteManager::Get()->GetDefaultDeviceId();
+}
+
 void USystemAudioVolumeLiteBPLibrary::GetDeviceIdFromName(const FString& InDeviceName, FString& OutDeviceId)
 {
 	OutDeviceId = FSystemAudioLiteManager::Get()->GetDeviceIdFromName(InDeviceName);
@@ -41,14 +46,26 @@ void USystemAudioVolumeLiteBPLibrary::SetVolumeForDeviceId(const FString& Device
 	FSystemAudioLiteManager::Get()->SetVolume(Volume, DeviceId);
 }
 
+void USystemAudioVolumeLiteBPLibrary::SetVolumeForDeviceName(const FString& DeviceName, float Volume)
+{
+	const FString DeviceId = FSystemAudioLiteManager::Get()->GetDeviceIdFromName(DeviceName);
+	FSystemAudioLiteManager::Get()->SetVolume(Volume, DeviceId);
+}
+
 float USystemAudioVolumeLiteBPLibrary::GetVolume()
 {
 	return FSystemAudioLiteManager::Get()->GetVolume();
 }
 
-float USystemAudioVolumeLiteBPLibrary::GetVolumeForDeviceId(const FString& DeviceId)
+void USystemAudioVolumeLiteBPLibrary::GetVolumeForDeviceId(const FString& InDeviceId, float& OutVolume)
 {
-	return FSystemAudioLiteManager::Get()->GetVolume(DeviceId);
+	OutVolume = FSystemAudioLiteManager::Get()->GetVolume(InDeviceId);
+}
+
+void USystemAudioVolumeLiteBPLibrary::GetVolumeForDeviceName(const FString& InDeviceName, float& OutVolume)
+{
+	const FString DeviceId = FSystemAudioLiteManager::Get()->GetDeviceIdFromName(InDeviceName);
+	OutVolume = FSystemAudioLiteManager::Get()->GetVolume(DeviceId);
 }
 
 TMap<FString, FString> USystemAudioVolumeLiteBPLibrary::GetActiveDevices()

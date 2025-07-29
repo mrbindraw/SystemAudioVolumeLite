@@ -66,46 +66,25 @@ void FSystemAudioLiteManager::DestroyInstance()
 	}
 }
 
-FString FSystemAudioLiteManager::GetDefaultDeviceName()
+FString FSystemAudioLiteManager::GetDefaultDeviceName() const
 {
-	return GetDeviceNameFromId(GetDefaultDeviceId());
-}
-
-FString FSystemAudioLiteManager::GetDefaultDeviceId()
-{
-	FString DeviceIdStr;
-
 #if PLATFORM_WINDOWS
-	TComPtr<IMMDevice> Device = GetDevice();
-	if (!Device.IsValid())
-	{
-		return FString(TEXT(""));
-	}
-
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/dd371405(v=vs.85).aspx, see Return value!
-	TComPtr<IAudioEndpointVolume> AudioEndpointVolume = GetAudioEndpointVolume(Device);
-	if (!AudioEndpointVolume.IsValid())
-	{
-		return FString(TEXT(""));
-	}
-
-	WCHAR* swDeviceId = TCHAR_TO_WCHAR(TEXT(""));
-	HRESULT Result = Device->GetId(&swDeviceId);
-	if (Result != S_OK)
-	{
-		UE_LOG(LogSystemAudioLiteManager, Warning, TEXT("Result != S_OK, Device->GetId, [%s], line: %d"), ANSI_TO_TCHAR(__FUNCTION__), __LINE__);
-		return FString(TEXT(""));
-	}
-	DeviceIdStr = FString(WCHAR_TO_TCHAR(swDeviceId));
-
-	CoTaskMemFree(swDeviceId);
-	swDeviceId = nullptr;
+	return GetDeviceName(GetDevice());
+#else
+	return FString(TEXT(""));
 #endif
-
-	return DeviceIdStr;
 }
 
-FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId)
+FString FSystemAudioLiteManager::GetDefaultDeviceId() const
+{
+#if PLATFORM_WINDOWS
+	return GetDeviceId(GetDevice());
+#else
+	return FString(TEXT(""));
+#endif
+}
+
+FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId) const
 {
 	FString DeviceName;
 
@@ -121,7 +100,7 @@ FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId)
 	return DeviceName;
 }
 
-FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName)
+FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName) const
 {
 	FString DeviceId;
 
@@ -137,7 +116,7 @@ FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName)
 	return DeviceId;
 }
 
-TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
+TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices() const
 {
 	TMap<FString, FString> ActiveDevices;
 
@@ -151,36 +130,23 @@ TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
 		return TMap<FString, FString>();
 	}
 
-	UINT count = 0;
-	Result = DevicesCollection->GetCount(&count);
+	UINT CountActiveDevices = 0;
+	Result = DevicesCollection->GetCount(&CountActiveDevices);
 	if (Result != S_OK)
 	{
 		UE_LOG(LogSystemAudioLiteManager, Warning, TEXT("Result != S_OK, DevicesCollection->GetCount, [%s], line: %d"), ANSI_TO_TCHAR(__FUNCTION__), __LINE__);
 		return TMap<FString, FString>();
 	}
 
-	for (UINT i = 0; i < count; i++)
+	for (UINT i = 0; i < CountActiveDevices; i++)
 	{
 		TComPtr<IMMDevice> Device;
-		TComPtr<IPropertyStore>	PropertyStore;
-		LPWSTR pwszID = nullptr;
-		
 		DevicesCollection->Item(i, &Device);
-		Device->GetId(&pwszID);
 
-		Device->OpenPropertyStore(STGM_READ, &PropertyStore);
+		const FString DeviceId = GetDeviceId(Device);
+		const FString DeviceName = GetDeviceName(Device);
 
-		PROPVARIANT nameDevice;
-		PropVariantInit(&nameDevice);
-		PropertyStore->GetValue(PKEY_Device_FriendlyName, &nameDevice);
-
-		ActiveDevices.Add(FString(WCHAR_TO_TCHAR(pwszID)));
-		ActiveDevices[FString(WCHAR_TO_TCHAR(pwszID))] = FString(WCHAR_TO_TCHAR(nameDevice.pwszVal));
-
-		PropVariantClear(&nameDevice);
-
-		CoTaskMemFree(pwszID);
-		pwszID = nullptr;
+		ActiveDevices.Add(DeviceId, DeviceName);
 	}
 #endif
 
@@ -212,7 +178,7 @@ void FSystemAudioLiteManager::SetVolume(float Value, const FString& DeviceId)
 #endif
 }
 
-float FSystemAudioLiteManager::GetVolume(const FString& DeviceId)
+float FSystemAudioLiteManager::GetVolume(const FString& DeviceId) const
 {
 	float Volume = 0.0f;
 
@@ -235,18 +201,18 @@ float FSystemAudioLiteManager::GetVolume(const FString& DeviceId)
 }
 
 
-float FSystemAudioLiteManager::GetScalarFromValue(int32 Value)
+float FSystemAudioLiteManager::GetScalarFromValue(int32 Value) const
 {
 	return FMath::Abs(Value) >= 100.0f ? 1.0f : Value / 100.0f;
 }
 
-float FSystemAudioLiteManager::GetValueFromScalar(float Value)
+float FSystemAudioLiteManager::GetValueFromScalar(float Value) const
 {
 	return FMath::RoundToFloat(FMath::Abs(Value) > 0.0f ? Value * 100.0f : 0.0f);
 }
 
 #if PLATFORM_WINDOWS
-TComPtr<IMMDevice> FSystemAudioLiteManager::GetDevice(const FString& DeviceId)
+TComPtr<IMMDevice> FSystemAudioLiteManager::GetDevice(const FString& DeviceId) const
 {
 	TComPtr<IMMDevice> Device;
 	HRESULT Result = S_OK;
@@ -273,7 +239,51 @@ TComPtr<IMMDevice> FSystemAudioLiteManager::GetDevice(const FString& DeviceId)
 	return Device;
 }
 
-TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device)
+FString FSystemAudioLiteManager::GetDeviceName(const TComPtr<IMMDevice>& Device) const
+{
+	if (!Device.IsValid())
+	{
+		return FString(TEXT(""));
+	}
+
+	TComPtr<IPropertyStore> PropertyStore;
+	Device->OpenPropertyStore(STGM_READ, &PropertyStore);
+
+	PROPVARIANT nameDevice;
+	PropVariantInit(&nameDevice);
+	PropertyStore->GetValue(PKEY_Device_FriendlyName, &nameDevice);
+
+	const FString DeviceName = FString(WCHAR_TO_TCHAR(nameDevice.pwszVal));
+
+	PropVariantClear(&nameDevice);
+
+	return DeviceName;
+}
+
+FString FSystemAudioLiteManager::GetDeviceId(const TComPtr<IMMDevice>& Device) const
+{
+	if (!Device.IsValid())
+	{
+		return FString(TEXT(""));
+	}
+
+	WCHAR* swDeviceId = TCHAR_TO_WCHAR(TEXT(""));
+	HRESULT Result = Device->GetId(&swDeviceId);
+	if (Result != S_OK)
+	{
+		UE_LOG(LogSystemAudioLiteManager, Warning, TEXT("Result != S_OK, Device->GetId, [%s], line: %d"), ANSI_TO_TCHAR(__FUNCTION__), __LINE__);
+		return FString(TEXT(""));
+	}
+
+	const FString DeviceId = FString(WCHAR_TO_TCHAR(swDeviceId));
+
+	CoTaskMemFree(swDeviceId);
+	swDeviceId = nullptr;
+
+	return DeviceId;
+}
+
+TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device) const
 {
 	if (!Device.IsValid())
 	{
@@ -291,7 +301,7 @@ TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(co
 	return AudioEndpointVolume;
 }
 
-TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const FString& DeviceId)
+TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const FString& DeviceId) const
 {
 	TComPtr<IMMDevice> Device = GetDevice(DeviceId);
 	if (!Device.IsValid())
