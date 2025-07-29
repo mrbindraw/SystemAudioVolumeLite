@@ -68,41 +68,20 @@ void FSystemAudioLiteManager::DestroyInstance()
 
 FString FSystemAudioLiteManager::GetDefaultDeviceName()
 {
-	return GetDeviceNameFromId(GetDefaultDeviceId());
+#if PLATFORM_WINDOWS
+	return GetDeviceName(GetDevice());
+#else
+	return FString(TEXT(""));
+#endif
 }
 
 FString FSystemAudioLiteManager::GetDefaultDeviceId()
 {
-	FString DeviceIdStr;
-
 #if PLATFORM_WINDOWS
-	TComPtr<IMMDevice> Device = GetDevice();
-	if (!Device.IsValid())
-	{
-		return FString(TEXT(""));
-	}
-
-	// https://msdn.microsoft.com/en-us/library/windows/desktop/dd371405(v=vs.85).aspx, see Return value!
-	TComPtr<IAudioEndpointVolume> AudioEndpointVolume = GetAudioEndpointVolume(Device);
-	if (!AudioEndpointVolume.IsValid())
-	{
-		return FString(TEXT(""));
-	}
-
-	WCHAR* swDeviceId = TCHAR_TO_WCHAR(TEXT(""));
-	HRESULT Result = Device->GetId(&swDeviceId);
-	if (Result != S_OK)
-	{
-		UE_LOG(LogSystemAudioLiteManager, Warning, TEXT("Result != S_OK, Device->GetId, [%s], line: %d"), ANSI_TO_TCHAR(__FUNCTION__), __LINE__);
-		return FString(TEXT(""));
-	}
-	DeviceIdStr = FString(WCHAR_TO_TCHAR(swDeviceId));
-
-	CoTaskMemFree(swDeviceId);
-	swDeviceId = nullptr;
+	return GetDeviceId(GetDevice());
+#else
+	return FString(TEXT(""));
 #endif
-
-	return DeviceIdStr;
 }
 
 FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId)
