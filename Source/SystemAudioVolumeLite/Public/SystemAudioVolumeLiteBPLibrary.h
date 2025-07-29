@@ -27,7 +27,7 @@ public:
 	static void SetVolume(float Value);
 
 	/** If DeviceId is empty then it will set Volume value to the default device audio in the system */
-	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Set System Audio Volume For DeviceId")
+	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Set System Audio Volume For Device Id")
 	static void SetVolumeForDeviceId(const FString& DeviceId, float Volume);
 
 	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Volume")
