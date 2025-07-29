@@ -34,8 +34,8 @@ public:
 	static float GetVolume();
 
 	/** If DeviceId is empty then it will return volume value from the default device audio in the system */
-	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Volume For DeviceId")
-	static float GetVolumeForDeviceId(const FString& DeviceId);
+	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Volume For Device Id")
+	static void GetVolumeForDeviceId(const FString& InDeviceId, float& OutVolume);
 	
 	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Active Devices")
 	static TMap<FString, FString> GetActiveDevices();
