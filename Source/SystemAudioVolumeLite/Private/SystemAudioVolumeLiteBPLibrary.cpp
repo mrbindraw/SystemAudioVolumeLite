@@ -41,6 +41,12 @@ void USystemAudioVolumeLiteBPLibrary::SetVolumeForDeviceId(const FString& Device
 	FSystemAudioLiteManager::Get()->SetVolume(Volume, DeviceId);
 }
 
+void USystemAudioVolumeLiteBPLibrary::SetVolumeForDeviceName(const FString& DeviceName, float Volume)
+{
+	const FString DeviceId = FSystemAudioLiteManager::Get()->GetDeviceIdFromName(DeviceName);
+	FSystemAudioLiteManager::Get()->SetVolume(Volume, DeviceId);
+}
+
 float USystemAudioVolumeLiteBPLibrary::GetVolume()
 {
 	return FSystemAudioLiteManager::Get()->GetVolume();

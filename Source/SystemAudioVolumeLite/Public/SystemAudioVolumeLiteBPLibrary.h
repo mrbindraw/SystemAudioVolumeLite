@@ -30,6 +30,9 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Set System Audio Volume For Device Id")
 	static void SetVolumeForDeviceId(const FString& DeviceId, float Volume);
 
+	UFUNCTION(BlueprintCallable, Category = "SystemAudioVolumeLite", DisplayName = "Set System Audio Volume For Device Name")
+	static void SetVolumeForDeviceName(const FString& DeviceName, float Volume);
+
 	UFUNCTION(BlueprintPure, Category = "SystemAudioVolumeLite", DisplayName = "Get System Audio Volume")
 	static float GetVolume();
 
