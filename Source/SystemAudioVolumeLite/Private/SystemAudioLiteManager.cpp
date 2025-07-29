@@ -66,7 +66,7 @@ void FSystemAudioLiteManager::DestroyInstance()
 	}
 }
 
-FString FSystemAudioLiteManager::GetDefaultDeviceName()
+FString FSystemAudioLiteManager::GetDefaultDeviceName() const
 {
 #if PLATFORM_WINDOWS
 	return GetDeviceName(GetDevice());
@@ -75,7 +75,7 @@ FString FSystemAudioLiteManager::GetDefaultDeviceName()
 #endif
 }
 
-FString FSystemAudioLiteManager::GetDefaultDeviceId()
+FString FSystemAudioLiteManager::GetDefaultDeviceId() const
 {
 #if PLATFORM_WINDOWS
 	return GetDeviceId(GetDevice());
@@ -84,7 +84,7 @@ FString FSystemAudioLiteManager::GetDefaultDeviceId()
 #endif
 }
 
-FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId)
+FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId) const
 {
 	FString DeviceName;
 
@@ -100,7 +100,7 @@ FString FSystemAudioLiteManager::GetDeviceNameFromId(const FString& DeviceId)
 	return DeviceName;
 }
 
-FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName)
+FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName) const
 {
 	FString DeviceId;
 
@@ -116,7 +116,7 @@ FString FSystemAudioLiteManager::GetDeviceIdFromName(const FString& DeviceName)
 	return DeviceId;
 }
 
-TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices()
+TMap<FString, FString> FSystemAudioLiteManager::GetActiveDevices() const
 {
 	TMap<FString, FString> ActiveDevices;
 
@@ -178,7 +178,7 @@ void FSystemAudioLiteManager::SetVolume(float Value, const FString& DeviceId)
 #endif
 }
 
-float FSystemAudioLiteManager::GetVolume(const FString& DeviceId)
+float FSystemAudioLiteManager::GetVolume(const FString& DeviceId) const
 {
 	float Volume = 0.0f;
 
@@ -201,18 +201,18 @@ float FSystemAudioLiteManager::GetVolume(const FString& DeviceId)
 }
 
 
-float FSystemAudioLiteManager::GetScalarFromValue(int32 Value)
+float FSystemAudioLiteManager::GetScalarFromValue(int32 Value) const
 {
 	return FMath::Abs(Value) >= 100.0f ? 1.0f : Value / 100.0f;
 }
 
-float FSystemAudioLiteManager::GetValueFromScalar(float Value)
+float FSystemAudioLiteManager::GetValueFromScalar(float Value) const
 {
 	return FMath::RoundToFloat(FMath::Abs(Value) > 0.0f ? Value * 100.0f : 0.0f);
 }
 
 #if PLATFORM_WINDOWS
-TComPtr<IMMDevice> FSystemAudioLiteManager::GetDevice(const FString& DeviceId)
+TComPtr<IMMDevice> FSystemAudioLiteManager::GetDevice(const FString& DeviceId) const
 {
 	TComPtr<IMMDevice> Device;
 	HRESULT Result = S_OK;
@@ -283,7 +283,7 @@ FString FSystemAudioLiteManager::GetDeviceId(const TComPtr<IMMDevice>& Device) c
 	return DeviceId;
 }
 
-TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device)
+TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const TComPtr<IMMDevice>& Device) const
 {
 	if (!Device.IsValid())
 	{
@@ -301,7 +301,7 @@ TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(co
 	return AudioEndpointVolume;
 }
 
-TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const FString& DeviceId)
+TComPtr<IAudioEndpointVolume> FSystemAudioLiteManager::GetAudioEndpointVolume(const FString& DeviceId) const
 {
 	TComPtr<IMMDevice> Device = GetDevice(DeviceId);
 	if (!Device.IsValid())
